@@ -12,7 +12,7 @@ class App(tk.Tk):
         super().__init__()
 
         ## CONNECT DATABASE
-        Model.create_table(self)   ## udah dibikin
+        # Model.create_table(self)   ## udah dibikin
 
         ## VARIABEL
         #### Variabel Tambah Kegiatan

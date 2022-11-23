@@ -29,10 +29,24 @@ class Model():
         self.conn.close()
 
     def insert_kegiatan(self, kegiatan):
-        pass  
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        with self.conn:
+            self.c.execute("""INSERT INTO kegiatan VALUES
+                        (:id_kegiatan, :nama_kegiatan, :batas_waktu, :status, :id_kategori)""",
+                        {'id_kegiatan': kegiatan.id, 'nama_kegiatan': kegiatan.nama, 'batas_waktu': kegiatan.waktu, 'status': kegiatan.status, 'id_kategori': kegiatan.kategori}
+                    )
+        self.conn.close()    
 
     def insert_kategori(self, kategori):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        with self.conn:
+            self.c.execute("""INSERT INTO kategori VALUES
+                        (:id_kategori, :nama_kategori)""",
+                        {'id_kategori': kategori.id, 'nama_kategori': kategori.nama}
+                    )
+        self.conn.close()
 
     def get_all_kegiatan(self):
         self.conn = sqlite3.connect('sibukin.db')
@@ -68,13 +82,22 @@ class Model():
         pass
 
     def get_all_kategori(self):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT * FROM kategori")
+        return self.c.fetchall()
 
     def get_kegiatan_by_id(self, id):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT * FROM kegiatan WHERE id_kegiatan=:id_kegiatan", {'id_kegiatan': id})
+        return self.c.fetchone()
 
     def get_kategori_by_id(self, id):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT nama_kategori FROM kategori WHERE id_kategori=:id_kategori", {'id_kategori': id})
+        return self.c.fetchone()
 
     def update_status(self, id, new_status):
         pass

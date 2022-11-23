@@ -5,13 +5,14 @@ from kegiatan import Kegiatan
 from kategori import Kategori
 from tkinter import messagebox
 from datetime import datetime
+from model_app import Model
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
         ## CONNECT DATABASE
-        # Model.create_table(self)   ## udah dibikin
+        Model.create_table(self)   ## udah dibikin
 
         ## VARIABEL
         #### Variabel Tambah Kegiatan

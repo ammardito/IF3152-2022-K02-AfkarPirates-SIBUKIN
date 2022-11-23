@@ -68,13 +68,22 @@ class Model():
         pass
 
     def get_all_kategori(self):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT * FROM kategori")
+        return self.c.fetchall()
 
     def get_kegiatan_by_id(self, id):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT * FROM kegiatan WHERE id_kegiatan=:id_kegiatan", {'id_kegiatan': id})
+        return self.c.fetchone()
 
     def get_kategori_by_id(self, id):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT nama_kategori FROM kategori WHERE id_kategori=:id_kategori", {'id_kategori': id})
+        return self.c.fetchone()
 
     def update_status(self, id, new_status):
         pass

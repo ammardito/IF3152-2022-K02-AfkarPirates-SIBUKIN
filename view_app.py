@@ -308,20 +308,42 @@ class App(tk.Tk):
         self.button_kirim.pack(ipadx=78, ipady=2, pady=32)
     
     def get_list_kategori(self):
-        pass
+        datas = self.get_list_class_kategori()
+        list_kategori = []
+        for kategori in datas:
+            list_kategori.append((kategori.nama))   
+        return list_kategori
 
     def get_list_kegiatan(self, list_class_kegiatan):
-       pass
+        # datas = list_class_kegiatan
+        list_kegiatan = []
+        for kegiatan in list_class_kegiatan:
+            list_kegiatan.append((kegiatan.id, kegiatan.nama, kegiatan.waktu, kegiatan.kategori, kegiatan.status))
+        return list_kegiatan
 
     def get_list_class_kegiatan(self, list_data_kegiatan): # list data kegiatan hrs yg udah di append
-        pass
+        # list_data_kegiatan = Model.get_all_kegiatan_with_nama_kategori(self)
+        list_class_kegiatan = []
+        for kegiatan in list_data_kegiatan:
+            list_class_kegiatan.append(Kegiatan(kegiatan[0], kegiatan[1], kegiatan[2], kegiatan[3], kegiatan[5]))
+        return list_class_kegiatan
 
     def get_list_class_kategori(self):
-        pass
+        list_kategori = Model.get_all_kategori(self)
+        list_class_kategori = []
+        for kategori in list_kategori:
+            list_class_kategori.append(Kategori(kategori[0], kategori[1]))
+        return list_class_kategori
     
     def get_id_kategori_by_nama(self, nama):
-        pass
-
+        id = 0
+        list_kategori = self.get_list_class_kategori()
+        for kategori in list_kategori:
+            if kategori.nama == nama:
+                id = kategori.id
+                break
+        return id
+    
     def submit_kegiatan(self):
         pass
         
@@ -338,7 +360,23 @@ class App(tk.Tk):
         pass
     
     def render_data_kegiatan_all(self):
-        pass
+        self.tree.delete(*self.tree.get_children())
+        list_kegiatan = self.get_list_kegiatan(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))
+        # Add data to the treeview
+        # print(list_kegiatan)
+        for kegiatan in list_kegiatan:
+            # Update status expired
+            date_time_obj = datetime.strptime(kegiatan[2], '%Y-%m-%d')
+            if (datetime.now().year > date_time_obj.year):
+                Model.update_status(self, kegiatan[0], 'Expired')
+            else:
+                if (datetime.now().month > date_time_obj.month):
+                    Model.update_status(self, kegiatan[0], 'Expired')
+                else:
+                    if (datetime.now().day > date_time_obj.day):
+                        Model.update_status(self, kegiatan[0], 'Expired')
+            # Show
+            self.tree.insert('', tk.END, values=kegiatan)
     
     def render_data_kegiatan_filtered_today(self):
         pass

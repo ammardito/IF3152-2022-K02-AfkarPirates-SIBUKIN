@@ -332,7 +332,14 @@ class App(tk.Tk):
        pass
     
     def tandai_selesai_kegiatan(self):
-        pass
+        # Get the selected iid
+        selected_item = self.tree.focus()
+        id = self.tree.item(selected_item).get('values')[0]
+        try:
+            Model.update_status(self, id, 'Done')
+        except:
+            messagebox.showerror("Error", "Error Occured")
+        self.render_data_kegiatan_all()
 
     def submit_filter(self):
         pass

@@ -77,7 +77,13 @@ class Model():
         pass
 
     def update_status(self, id, new_status):
-        pass
+        self.conn = sqlite3.connect('sibukin.db')
+        self.c = self.conn.cursor()
+        with self.conn:
+            self.c.execute("""UPDATE kegiatan SET status = :status
+                        WHERE id_kegiatan = :id_kegiatan""",
+                    {'id_kegiatan': id, 'status': new_status})
+        self.conn.close()
 
     def remove_kegiatan(self, kegiatan):
         pass

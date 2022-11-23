@@ -16,7 +16,7 @@ Note : Tidak perlu set up untuk akses database karena menggunakan SQlite3
 2. Daffa Febryananta Arifinsyah   18220018  - Mengubah Status   - Test Filter
 3. Kafi Irgie Rahmansyah          18220020  - Show Kegiatan     - Test Insert Kegiatan
 4. Muhammad Rakha Wiratama        18220070  - Filter Kegiatan   - Test Show Kegiatan
-5. Amamrdito Shafaat              18220074  - Insert Kegiatan   - Test Hapus Kegiatan
+5. Ammardito Shafaat              18220074  - Insert Kegiatan   - Test Hapus Kegiatan
 
 **Daftar Tabel yang Diimplementasi**
 1. Tabel kegiatan   |  Atribut : id_kegiatan, nama_kegiatan, status, batas_waktu, id_kategori

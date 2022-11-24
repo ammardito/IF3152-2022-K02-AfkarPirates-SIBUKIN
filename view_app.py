@@ -345,7 +345,42 @@ class App(tk.Tk):
         return id
 
     def submit_kegiatan(self):
-        pass
+        print("Kegiatan Submited")
+        print(self.INPUT_NAMA_KEGIATAN.get())
+        print(self.INPUT_BATAS_WAKTU.get())
+        print(self.INPUT_KATEGORI.get())
+        print(self.get_id_kategori_by_nama(self.INPUT_KATEGORI.get()))
+        # try:
+        if self.INPUT_NAMA_KEGIATAN.get() == "" or self.INPUT_BATAS_WAKTU.get() == "" or self.INPUT_KATEGORI.get() == "":
+            messagebox.showerror("Error", "Oops, jangan lupa masukkan seluruh field")
+        else:
+            id = 0
+            for i in range(0, len(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))):
+                if i == (len(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))-1):
+                    id = self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self))[i].id + 1
+            print("IDD", id)
+            # Update status expired
+            date_time_obj = datetime.strptime(self.INPUT_BATAS_WAKTU.get(), '%Y-%m-%d')
+            status = 'On Going'
+            if (datetime.now().year > date_time_obj.year):
+                status = 'Expired'
+            elif (datetime.now().year == date_time_obj.year):
+                if (datetime.now().month > date_time_obj.month):
+                    status = 'Expired'
+                elif (datetime.now().month == date_time_obj.month):
+                    if (datetime.now().day > date_time_obj.day):
+                        status = 'Expired'
+                    else:
+                        pass
+            kegiatan = Kegiatan(id, self.INPUT_NAMA_KEGIATAN.get(), self.INPUT_BATAS_WAKTU.get(), status, self.get_id_kategori_by_nama(self.INPUT_KATEGORI.get()))
+            Model.insert_kegiatan(self, kegiatan)
+        # except:
+            # messagebox.showerror("Error", "Error Occured")
+        self.INPUT_NAMA_KEGIATAN.set("")
+        self.INPUT_BATAS_WAKTU.set("")
+        self.INPUT_KATEGORI.set("")
+        self.pop_up.destroy()
+        self.render_data_kegiatan_all()
         
     def submit_kategori(self):
         pass

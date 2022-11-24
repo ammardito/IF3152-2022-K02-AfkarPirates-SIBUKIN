@@ -12,7 +12,7 @@ class App(tk.Tk):
         super().__init__()
 
         ## CONNECT DATABASE
-        # Model.create_table(self)   ## udah dibikin
+        Model.create_table(self)
 
         ## VARIABEL
         #### Variabel Tambah Kegiatan
@@ -236,8 +236,6 @@ class App(tk.Tk):
 
     def show_pop_up_kategori(self):
         self.pop_up = Toplevel(self)
-        # self.controller = controller
-        # self.id = controller.id
         self.pop_up_font = tkfont.Font(family="Lexend SemiBold", size = 16, weight = "bold")
         
         width = self.winfo_screenwidth()
@@ -272,10 +270,7 @@ class App(tk.Tk):
         self.pop_up = Toplevel(self)
         list_kategori = self.get_list_kategori()
         list_kategori.append('')
-        # list_kategori = ['Semua']
-        # for kategori in self.get_list_kategori():
-        #     list_kategori.append(kategori)
-
+        
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
         x = int(width / 2 - 300 / 2)
@@ -315,14 +310,12 @@ class App(tk.Tk):
         return list_kategori
 
     def get_list_kegiatan(self, list_class_kegiatan):
-        # datas = list_class_kegiatan
         list_kegiatan = []
         for kegiatan in list_class_kegiatan:
             list_kegiatan.append((kegiatan.id, kegiatan.nama, kegiatan.waktu, kegiatan.kategori, kegiatan.status))
         return list_kegiatan
 
-    def get_list_class_kegiatan(self, list_data_kegiatan): # list data kegiatan hrs yg udah di append
-        # list_data_kegiatan = Model.get_all_kegiatan_with_nama_kategori(self)
+    def get_list_class_kegiatan(self, list_data_kegiatan):
         list_class_kegiatan = []
         for kegiatan in list_data_kegiatan:
             list_class_kegiatan.append(Kegiatan(kegiatan[0], kegiatan[1], kegiatan[2], kegiatan[3], kegiatan[5]))
@@ -350,32 +343,32 @@ class App(tk.Tk):
         print(self.INPUT_BATAS_WAKTU.get())
         print(self.INPUT_KATEGORI.get())
         print(self.get_id_kategori_by_nama(self.INPUT_KATEGORI.get()))
-        # try:
-        if self.INPUT_NAMA_KEGIATAN.get() == "" or self.INPUT_BATAS_WAKTU.get() == "" or self.INPUT_KATEGORI.get() == "":
-            messagebox.showerror("Error", "Oops, jangan lupa masukkan seluruh field")
-        else:
-            id = 0
-            for i in range(0, len(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))):
-                if i == (len(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))-1):
-                    id = self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self))[i].id + 1
-            print("IDD", id)
-            # Update status expired
-            date_time_obj = datetime.strptime(self.INPUT_BATAS_WAKTU.get(), '%Y-%m-%d')
-            status = 'On Going'
-            if (datetime.now().year > date_time_obj.year):
-                status = 'Expired'
+        try:
+            if self.INPUT_NAMA_KEGIATAN.get() == "" or self.INPUT_BATAS_WAKTU.get() == "" or self.INPUT_KATEGORI.get() == "":
+                messagebox.showerror("Error", "Oops, jangan lupa masukkan seluruh field")
             else:
-                if (datetime.now().month > date_time_obj.month):
+                id = 0
+                for i in range(0, len(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))):
+                    if i == (len(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))-1):
+                        id = self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self))[i].id + 1
+                print("IDD", id)
+                # Update status expired
+                date_time_obj = datetime.strptime(self.INPUT_BATAS_WAKTU.get(), '%Y-%m-%d')
+                status = 'On Going'
+                if (datetime.now().year > date_time_obj.year):
                     status = 'Expired'
-                else:
-                    if (datetime.now().day > date_time_obj.day):
+                elif (datetime.now().year == date_time_obj.year):
+                    if (datetime.now().month > date_time_obj.month):
                         status = 'Expired'
-                    else:
-                        pass
-            kegiatan = Kegiatan(id, self.INPUT_NAMA_KEGIATAN.get(), self.INPUT_BATAS_WAKTU.get(), status, self.get_id_kategori_by_nama(self.INPUT_KATEGORI.get()))
-            Model.insert_kegiatan(self, kegiatan)
-        # except:
-            # messagebox.showerror("Error", "Error Occured")
+                    elif (datetime.now().month == date_time_obj.month):
+                        if (datetime.now().day > date_time_obj.day):
+                            status = 'Expired'
+                        else:
+                            pass
+                kegiatan = Kegiatan(id, self.INPUT_NAMA_KEGIATAN.get(), self.INPUT_BATAS_WAKTU.get(), status, self.get_id_kategori_by_nama(self.INPUT_KATEGORI.get()))
+                Model.insert_kegiatan(self, kegiatan)
+        except:
+            messagebox.showerror("Error", "Error Occured")
         self.INPUT_NAMA_KEGIATAN.set("")
         self.INPUT_BATAS_WAKTU.set("")
         self.INPUT_KATEGORI.set("")
@@ -423,46 +416,42 @@ class App(tk.Tk):
         print(self.INPUT_FILTER_WAKTU.get())
         print(self.INPUT_FILTER_KATEGORI.get())
         print(self.get_id_kategori_by_nama(self.INPUT_FILTER_KATEGORI.get()))
-        # try:
-        if self.INPUT_FILTER_STATUS.get() != "":
-            if self.INPUT_FILTER_KATEGORI.get() == "" and self.INPUT_FILTER_WAKTU.get() == "":
-                self.render_data_kegiatan_filtered_status(self.INPUT_FILTER_STATUS.get())
-            elif self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "":
-                self.render_data_kegiatan_filtered_status_kategori(self.INPUT_FILTER_STATUS.get(), self.INPUT_FILTER_KATEGORI.get())
-            elif self.INPUT_FILTER_KATEGORI.get() == "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
-                self.render_data_kegiatan_filtered_status_today(self.INPUT_FILTER_STATUS.get())
-            elif self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
-                self.render_data_kegiatan_filtered_status_kategori_today(self.INPUT_FILTER_STATUS.get(), self.INPUT_FILTER_KATEGORI.get())
-        elif self.INPUT_FILTER_STATUS.get() == "":
-            if self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "":
-                self.render_data_kegiatan_filtered_kategori(self.INPUT_FILTER_KATEGORI.get())
-            elif self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
-                self.render_data_kegiatan_filtered_kategori_today(self.INPUT_FILTER_KATEGORI.get())
-            elif self.INPUT_FILTER_KATEGORI.get() == "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
-                self.render_data_kegiatan_filtered_today()
-            elif self.INPUT_BATAS_WAKTU.get() == "" and self.INPUT_FILTER_KATEGORI.get() == "":
-                self.render_data_kegiatan_all()
-        # except:
-            # messagebox.showerror("Error", "Error Occured")
-        self.INPUT_FILTER_STATUS.set("")
-        self.INPUT_BATAS_WAKTU.set("")
-        self.INPUT_FILTER_KATEGORI.set("")
+        try:
+            if self.INPUT_FILTER_STATUS.get() != "":
+                if self.INPUT_FILTER_KATEGORI.get() == "" and self.INPUT_FILTER_WAKTU.get() == "":
+                    self.render_data_kegiatan_filtered_status(self.INPUT_FILTER_STATUS.get())
+                elif self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "":
+                    self.render_data_kegiatan_filtered_status_kategori(self.INPUT_FILTER_STATUS.get(), self.INPUT_FILTER_KATEGORI.get())
+                elif self.INPUT_FILTER_KATEGORI.get() == "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
+                    self.render_data_kegiatan_filtered_status_today(self.INPUT_FILTER_STATUS.get())
+                elif self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
+                    self.render_data_kegiatan_filtered_status_kategori_today(self.INPUT_FILTER_STATUS.get(), self.INPUT_FILTER_KATEGORI.get())
+            elif self.INPUT_FILTER_STATUS.get() == "":
+                if self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "":
+                    self.render_data_kegiatan_filtered_kategori(self.INPUT_FILTER_KATEGORI.get())
+                elif self.INPUT_FILTER_KATEGORI.get() != "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
+                    self.render_data_kegiatan_filtered_kategori_today(self.INPUT_FILTER_KATEGORI.get())
+                elif self.INPUT_FILTER_KATEGORI.get() == "" and self.INPUT_FILTER_WAKTU.get() == "Hari Ini":
+                    self.render_data_kegiatan_filtered_today()
+                elif self.INPUT_BATAS_WAKTU.get() == "" and self.INPUT_FILTER_KATEGORI.get() == "":
+                    self.render_data_kegiatan_all()
+        except:
+            messagebox.showerror("Error", "Error Occured")
         self.pop_up.destroy()
     
     def render_data_kegiatan_all(self):
         self.tree.delete(*self.tree.get_children())
         list_kegiatan = self.get_list_kegiatan(self.get_list_class_kegiatan(Model.get_all_kegiatan_with_nama_kategori(self)))
         # Add data to the treeview
-        # print(list_kegiatan)
         for kegiatan in list_kegiatan:
             # Update status expired
             date_time_obj = datetime.strptime(kegiatan[2], '%Y-%m-%d')
             if (datetime.now().year > date_time_obj.year):
                 Model.update_status(self, kegiatan[0], 'Expired')
-            else:
+            elif (datetime.now().year == date_time_obj.year):
                 if (datetime.now().month > date_time_obj.month):
                     Model.update_status(self, kegiatan[0], 'Expired')
-                else:
+                elif (datetime.now().month == date_time_obj.month):
                     if (datetime.now().day > date_time_obj.day):
                         Model.update_status(self, kegiatan[0], 'Expired')
             # Show
